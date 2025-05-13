@@ -6,6 +6,7 @@ let map;
 let userMarker;
 let closestStationMarker;
 let stationMarkers = [];
+let currentFocusIndex = -1; // Indice de l'élément actuellement sélectionné dans la liste
 
 // Initialisation de la page
 document.addEventListener('DOMContentLoaded', async () => {
@@ -36,7 +37,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('communeForm').addEventListener('submit', handleCommuneFormSubmit);
 
     // Gestionnaire pour la recherche de commune
-    document.getElementById('communeSearch').addEventListener('input', handleCommuneSearch);
+    const communeSearchInput = document.getElementById('communeSearch');
+    communeSearchInput.addEventListener('input', handleCommuneSearch);
+
+    // Ajout des gestionnaires pour la navigation au clavier
+    communeSearchInput.addEventListener('keydown', handleKeyNavigation);
 
     // Gestionnaire pour les onglets
     document.getElementById('tab-coords').addEventListener('click', () => switchTab('coords'));
@@ -124,11 +129,76 @@ async function loadCommunes() {
     communes.sort((a, b) => a.nom.localeCompare(b.nom));
 }
 
+// Gestion de la navigation au clavier dans la liste des communes
+function handleKeyNavigation(event) {
+    const resultsContainer = document.getElementById('communeResults');
+    const items = resultsContainer.getElementsByTagName('li');
+
+    // Si la liste n'est pas visible ou vide, on ne fait rien
+    if (resultsContainer.classList.contains('hidden') || items.length === 0) {
+        currentFocusIndex = -1;
+        return;
+    }
+
+    // Navigation avec les touches directionnelles
+    if (event.key === 'ArrowDown') {
+        event.preventDefault(); // Empêcher le défilement de la page
+        currentFocusIndex++;
+        // Bouclage à la fin de la liste
+        if (currentFocusIndex >= items.length) currentFocusIndex = 0;
+        setActiveCommuneItem(items);
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault(); // Empêcher le défilement de la page
+        currentFocusIndex--;
+        // Bouclage au début de la liste
+        if (currentFocusIndex < 0) currentFocusIndex = items.length - 1;
+        setActiveCommuneItem(items);
+    } else if (event.key === 'Enter' && currentFocusIndex >= 0) {
+        event.preventDefault(); // Empêcher la soumission du formulaire
+        if (currentFocusIndex < items.length) {
+            items[currentFocusIndex].click(); // Simuler un clic sur l'élément sélectionné
+        }
+    } else if (event.key === 'Escape') {
+        // Fermer la liste si Escape est pressé
+        resultsContainer.classList.add('hidden');
+        currentFocusIndex = -1;
+    }
+}
+
+// Fonction pour définir l'élément actif dans la liste
+function setActiveCommuneItem(items) {
+    // Supprimer la classe 'active' de tous les éléments
+    for (let i = 0; i < items.length; i++) {
+        items[i].classList.remove('active');
+    }
+
+    // Ajouter la classe 'active' à l'élément sélectionné
+    if (currentFocusIndex >= 0 && currentFocusIndex < items.length) {
+        items[currentFocusIndex].classList.add('active');
+
+        // Faire défiler la liste pour que l'élément actif soit visible
+        const container = document.getElementById('communeResults');
+        const activeItem = items[currentFocusIndex];
+
+        // Calculer la position de l'élément par rapport au conteneur
+        const containerRect = container.getBoundingClientRect();
+        const activeItemRect = activeItem.getBoundingClientRect();
+
+        // Vérifier si l'élément est en dehors de la zone visible
+        if (activeItemRect.top < containerRect.top || activeItemRect.bottom > containerRect.bottom) {
+            activeItem.scrollIntoView({ block: 'nearest' });
+        }
+    }
+}
+
 // Gestion de la recherche de commune
 function handleCommuneSearch(event) {
     const searchTerm = event.target.value.trim().toLowerCase();
     const resultsContainer = document.getElementById('communeResults');
     const submitButton = document.getElementById('communeSubmitBtn');
+
+    // Réinitialiser l'index actif
+    currentFocusIndex = -1;
 
     // Vider le champ caché et désactiver le bouton
     document.getElementById('selectedCommune').value = '';
@@ -160,8 +230,9 @@ function handleCommuneSearch(event) {
         noResultItem.classList.add('text-gray-500', 'text-center', 'py-2');
         resultsContainer.appendChild(noResultItem);
     } else {
-        filteredCommunes.forEach(commune => {
+        filteredCommunes.forEach((commune, index) => {
             const item = document.createElement('li');
+            item.setAttribute('data-index', index);
             item.innerHTML = `
                 <div class="commune-item">
                     <span class="commune-name">${commune.nom}</span>
@@ -182,11 +253,18 @@ function handleCommuneSearch(event) {
                     longitude: commune.longitude
                 });
 
-                // Activer le bouton de recherche
+                // Activer le bouton de recherche (pour la cohérence visuelle)
                 submitButton.disabled = false;
 
                 // Masquer les résultats
                 resultsContainer.classList.add('hidden');
+
+                // Lancer immédiatement la recherche de station
+                findClosestStation(
+                    commune.latitude,
+                    commune.longitude,
+                    `${commune.nom} (${commune.codePostal})`
+                );
             });
 
             resultsContainer.appendChild(item);

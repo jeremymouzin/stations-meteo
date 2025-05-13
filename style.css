@@ -148,6 +148,8 @@ footer a {
 
 #communeResults li.active {
     background-color: #e0e7ff;
+    border-left: 3px solid #4263eb;
+    font-weight: 500;
 }
 
 .commune-item {
