@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Stations Météo</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-primary">Recherche de Station Météo</h1>
+            <p class="text-gray-600 mt-2">Entrez les coordonnées d'un point ou sélectionnez une commune pour trouver la
+                station météo la plus proche</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <ul class="flex rounded-lg overflow-hidden mb-6 shadow-md">
+                        <li class="w-1/2" id="tab-coords">
+                            <a
+                                class="flex items-center justify-center px-4 py-3 bg-primary text-white font-medium text-sm transition-all duration-200 ease-in-out hover:bg-primary-focus">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Coordonnées
+                            </a>
+                        </li>
+                        <li class="w-1/2" id="tab-commune">
+                            <a
+                                class="flex items-center justify-center px-4 py-3 bg-base-200 text-base-content font-medium text-sm transition-all duration-200 ease-in-out hover:bg-primary-focus">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                Commune
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div id="form-coords" class="form-section">
+                        <h2 class="card-title text-xl mb-4">Entrez les coordonnées</h2>
+                        <form id="coordsForm" class="space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Latitude</span>
+                                </label>
+                                <input type="number" id="latitude" step="any" min="-90" max="90" placeholder="Ex: 45.75"
+                                    class="input input-bordered" required />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Longitude</span>
+                                </label>
+                                <input type="number" id="longitude" step="any" min="-180" max="180"
+                                    placeholder="Ex: 4.85" class="input input-bordered" required />
+                            </div>
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                            </div>
+                        </form>
+                        <div class="divider">ou</div>
+                        <button id="useLocation" class="btn btn-outline btn-secondary">
+                            Utiliser ma position actuelle
+                        </button>
+                    </div>
+
+                    <div id="form-commune" class="form-section hidden">
+                        <h2 class="card-title text-xl mb-4">Sélectionnez une commune</h2>
+                        <form id="communeForm" class="space-y-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Commune</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="text" id="communeSearch"
+                                        placeholder="Recherchez par nom de commune ou code postal..."
+                                        class="input input-bordered w-full" />
+                                    <ul id="communeResults"
+                                        class="absolute z-10 bg-base-100 w-full mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto hidden">
+                                    </ul>
+                                </div>
+                                <input type="hidden" id="selectedCommune" value="" />
+                            </div>
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary" disabled
+                                    id="communeSubmitBtn">Rechercher</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-xl mb-4">Station la plus proche</h2>
+                    <div id="loadingIndicator" class="hidden">
+                        <span class="loading loading-spinner loading-lg text-primary"></span>
+                        <p>Recherche en cours...</p>
+                    </div>
+                    <div id="result" class="hidden">
+                        <div class="stats shadow mb-4 w-full">
+                            <div class="stat">
+                                <div class="stat-title">Nom de la station</div>
+                                <div class="stat-value text-xl overflow-x-auto max-w-full" id="stationName">-</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">ID Station</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationId">-</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Commune</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationCommune">-</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Numéro de Poste</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationNumPoste">-</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Département</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationDepartement">-
+                                </div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Altitude</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationAltitude">-</div>
+                                <div class="stat-desc">mètres</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Distance</div>
+                                <div class="stat-value text-lg text-primary overflow-x-auto max-w-full"
+                                    id="stationDistance">-</div>
+                                <div class="stat-desc">kilomètres</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Latitude</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationLat">-</div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-box">
+                                <div class="stat-title">Longitude</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationLon">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="noResult" class="hidden alert alert-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>Aucune station trouvée.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl mt-8">
+            <div id="map" class="h-96 w-full rounded-box"></div>
+        </div>
+    </div>
+
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-8">
+        <div>
+            <p>Station météo la plus proche - Développé par <a href="https://www.jeremymouzin.com">Jérémy Mouzin</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

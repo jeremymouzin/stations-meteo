@@ -1,0 +1,233 @@
+/* Styles supplémentaires pour l'application */
+
+/* Animation pour le chargement */
+@-webkit-keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.loading-pulse {
+    -webkit-animation: pulse 1.5s infinite ease-in-out;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Styles pour la carte */
+.station-popup .leaflet-popup-content {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.station-popup .station-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #3b82f6;
+}
+
+.station-popup .station-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 8px;
+    font-size: 0.9em;
+}
+
+.station-popup .station-details span:nth-child(odd) {
+    font-weight: 500;
+    color: #4b5563;
+}
+
+/* Style pour les liens */
+footer a {
+    text-decoration: underline !important;
+    color: #2563eb !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    #map {
+        height: 300px;
+    }
+}
+
+/* Station marker styles */
+.closest-station-marker {
+    border: 3px solid #ef4444 !important;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #ef4444;
+    -webkit-animation: pulse 2s infinite;
+    animation: pulse 2s infinite;
+}
+
+.station-marker {
+    border: 2px solid #3b82f6;
+}
+
+/* Custom button hover effect */
+.btn-primary:hover {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+/* Result highlight animation */
+@-webkit-keyframes highlight {
+    0% {
+        background-color: rgba(59, 130, 246, 0.2);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(59, 130, 246, 0.2);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlight-result {
+    -webkit-animation: highlight 2s ease-out;
+    animation: highlight 2s ease-out;
+}
+
+/* Styles pour la recherche de commune */
+#communeResults {
+    border: 1px solid #e5e7eb;
+}
+
+#communeResults li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#communeResults li:last-child {
+    border-bottom: none;
+}
+
+#communeResults li:hover {
+    background-color: #f3f4f6;
+}
+
+#communeResults li.active {
+    background-color: #e0e7ff;
+}
+
+.commune-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.commune-item .commune-name {
+    font-weight: 500;
+    max-width: 70%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.commune-item .commune-postal {
+    color: #6b7280;
+    font-size: 0.875rem;
+    background-color: #f3f4f6;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+}
+
+/* Tabs styling */
+.tabs-bordered .tab {
+    cursor: pointer;
+}
+
+.tabs-bordered .tab.tab-active {
+    border-bottom-color: #3b82f6;
+}
+
+.form-section {
+    transition: opacity 0.3s ease;
+}
+
+/* Styles pour les onglets améliorés */
+.flex.rounded-lg.overflow-hidden {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.flex.rounded-lg.overflow-hidden li {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.flex.rounded-lg.overflow-hidden li a {
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    height: 50px;
+    cursor: pointer;
+}
+
+.flex.rounded-lg.overflow-hidden li a:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.flex.rounded-lg.overflow-hidden li a svg {
+    transition: transform 0.3s ease;
+}
+
+.flex.rounded-lg.overflow-hidden li a:hover svg {
+    transform: scale(1.2);
+}
+
+/* Animation pour le changement d'onglet */
+.form-section {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
