@@ -233,3 +233,50 @@ footer a {
         transform: translateY(0);
     }
 }
+
+/* Styles pour les boutons de copie */
+.copy-btn {
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    opacity: 1;
+    background-color: #f1f5f9;
+}
+
+.copy-btn:active {
+    transform: scale(0.95);
+}
+
+.stat-value {
+    position: relative;
+}
+
+.stat-value .copy-btn {
+    position: relative;
+    top: -1px;
+}
+
+.stat-value:hover .copy-btn {
+    opacity: 0.8;
+}
+
+/* Animation pour la copie réussie */
+@keyframes copySuccess {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.copy-success {
+    animation: copySuccess 0.3s ease-in-out;
+}

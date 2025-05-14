@@ -114,45 +114,94 @@
                         <div class="stats shadow mb-4 w-full">
                             <div class="stat">
                                 <div class="stat-title">Nom de la station</div>
-                                <div class="stat-value text-xl overflow-x-auto max-w-full" id="stationName">-</div>
+                                <div class="stat-value text-xl overflow-x-auto max-w-full" id="stationName">
+                                    <span>-</span>
+                                </div>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">ID Station</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationId">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full flex items-center"
+                                    id="stationId">
+                                    <span class="mr-2">-</span>
+                                    <button class="btn btn-xs btn-ghost copy-btn" data-copy-target="stationId">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Commune</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationCommune">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationCommune">
+                                    <span>-</span>
+                                </div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Numéro de Poste</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationNumPoste">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full flex items-center"
+                                    id="stationNumPoste">
+                                    <span class="mr-2">-</span>
+                                    <button class="btn btn-xs btn-ghost copy-btn" data-copy-target="stationNumPoste">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Département</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationDepartement">-
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationDepartement">
+                                    <span>-</span>
                                 </div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Altitude</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationAltitude">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationAltitude">
+                                    <span>-</span>
+                                </div>
                                 <div class="stat-desc">mètres</div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Distance</div>
                                 <div class="stat-value text-lg text-primary overflow-x-auto max-w-full"
-                                    id="stationDistance">-</div>
+                                    id="stationDistance">
+                                    <span>-</span>
+                                </div>
                                 <div class="stat-desc">kilomètres</div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Latitude</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationLat">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full flex items-center"
+                                    id="stationLat">
+                                    <span class="mr-2">-</span>
+                                    <button class="btn btn-xs btn-ghost copy-btn" data-copy-target="stationLat">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="stat bg-base-200 rounded-box">
                                 <div class="stat-title">Longitude</div>
-                                <div class="stat-value text-lg overflow-x-auto max-w-full" id="stationLon">-</div>
+                                <div class="stat-value text-lg overflow-x-auto max-w-full flex items-center"
+                                    id="stationLon">
+                                    <span class="mr-2">-</span>
+                                    <button class="btn btn-xs btn-ghost copy-btn" data-copy-target="stationLon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -46,7 +46,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Gestionnaire pour les onglets
     document.getElementById('tab-coords').addEventListener('click', () => switchTab('coords'));
     document.getElementById('tab-commune').addEventListener('click', () => switchTab('commune'));
+
+    // Initialisation des boutons de copie
+    initCopyButtons();
 });
+
+// Initialisation des boutons de copie
+function initCopyButtons() {
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', handleCopy);
+    });
+}
+
+// Fonction de gestion de la copie
+function handleCopy(event) {
+    const button = event.currentTarget;
+    const targetId = button.getAttribute('data-copy-target');
+    const targetElement = document.getElementById(targetId);
+
+    // Récupérer le texte à copier (première partie du contenu - le span)
+    const textToCopy = targetElement.querySelector('span').textContent.trim();
+
+    // Vérifier si le contenu n'est pas vide ou égal à "-"
+    if (textToCopy && textToCopy !== "-") {
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                // Feedback visuel temporaire
+                const originalSvg = button.innerHTML;
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+
+                // Ajouter l'animation
+                button.classList.add('copy-success');
+
+                // Rétablir l'icône originale et supprimer l'animation après un délai
+                setTimeout(() => {
+                    button.innerHTML = originalSvg;
+                    button.classList.remove('copy-success');
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Erreur lors de la copie:', err);
+                alert('Impossible de copier le texte dans le presse-papiers.');
+            });
+    }
+}
 
 // Fonction pour changer d'onglet
 function switchTab(tabId) {
@@ -441,18 +488,16 @@ function displayStationResult(station, distance) {
     const result = document.getElementById('result');
 
     document.getElementById('stationName').textContent = station.properties.NOM_USUEL || 'Non spécifié';
-    document.getElementById('stationCommune').textContent = station.properties.COMMUNE || 'Non spécifié';
-    document.getElementById('stationAltitude').textContent = station.properties.ALTI || 'Non spécifié';
-    document.getElementById('stationLat').textContent = station.geometry.coordinates[1].toFixed(6);
-    document.getElementById('stationLon').textContent = station.geometry.coordinates[0].toFixed(6);
-    document.getElementById('stationDistance').textContent = distance.toFixed(2);
 
-    // Affichage du numéro de poste et du département
-    document.getElementById('stationNumPoste').textContent = station.properties.NUM_POSTE || 'Non spécifié';
-    document.getElementById('stationDepartement').textContent = station.properties.NUM_DEP || 'Non spécifié';
-
-    // Affichage de l'identifiant (index)
-    document.getElementById('stationId').textContent = station._id || 'Non spécifié';
+    // Mise à jour des spans à l'intérieur des divs avec boutons de copie
+    document.querySelector('#stationId span').textContent = station._id || 'Non spécifié';
+    document.querySelector('#stationCommune span').textContent = station.properties.COMMUNE || 'Non spécifié';
+    document.querySelector('#stationAltitude span').textContent = station.properties.ALTI || 'Non spécifié';
+    document.querySelector('#stationLat span').textContent = station.geometry.coordinates[1].toFixed(6);
+    document.querySelector('#stationLon span').textContent = station.geometry.coordinates[0].toFixed(6);
+    document.querySelector('#stationDistance span').textContent = distance.toFixed(2);
+    document.querySelector('#stationNumPoste span').textContent = station.properties.NUM_POSTE || 'Non spécifié';
+    document.querySelector('#stationDepartement span').textContent = station.properties.NUM_DEP || 'Non spécifié';
 
     result.classList.remove('hidden');
     result.classList.add('highlight-result');
